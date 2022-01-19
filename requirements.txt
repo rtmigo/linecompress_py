@@ -1,0 +1,4 @@
+neatest
+chkpkg
+mypy
+pylint
