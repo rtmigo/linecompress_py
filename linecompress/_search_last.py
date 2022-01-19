@@ -19,10 +19,15 @@ from typing import Optional, List, Iterable
 
 
 def _num_prefix(text: str) -> Optional[int]:
+    s = _num_prefix_str(text)
+    return int(s) if s is not None else None
+
+
+def _num_prefix_str(text: str) -> Optional[str]:
     m = re.search(r'^\d+', text)
     if m is None:
         return None
-    return int(m.group(0))
+    return m.group(0)
 
 
 class NoItems(ValueError):

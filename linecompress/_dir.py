@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import List, Optional, Iterable
 
 from linecompress import LinesFile
-from linecompress._search_last import _recurse_paths
+from linecompress._search_last import _recurse_paths, _num_prefix_str
 
 
 def _split_nums(x: int, length: Optional[int] = None) -> List[int]:
@@ -64,7 +64,9 @@ class NumberedFilePath:
 
     @staticmethod
     def from_path(file: Path, subdirs: int = 2) -> NumberedFilePath:
-        filenum = re.search(r'^\d+', file.name).group(0)
+        filenum = _num_prefix_str(file.name)
+        if filenum is None:
+            raise ValueError(file)
         suffix = file.name[len(filenum):]
         nums = [int(filenum)]
 
