@@ -1,7 +1,7 @@
 # [linecompress](https://github.com/rtmigo/linecompress_py#readme)
 
-A solution for storing multiple text strings in compressed files. Designed to
-store log files.
+A solution for storing multiple text strings in compressed files. 
+Useful for storing log files.
 
 ## LinesFile
 
