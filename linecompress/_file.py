@@ -1,24 +1,29 @@
 import lzma
 from pathlib import Path
-from typing import List
+from typing import List, Iterable
 
 
 class LinesFile:
-    def __init__(self, file: Path):
+    def __init__(self, file: Path, separator = '\n'):
         self._file = file
+        self._separator = separator
 
-    def add(self, data: str):
-        if '\n' in data:
+    def write(self, data: str):
+        if self._separator in data:
             raise ValueError('Newline in the data')
-        with lzma.open(self._file, "a") as lzf:
-            lzf.write(data.encode())
-            lzf.write(b'\n')
+        with lzma.open(self._file, "at", encoding="utf-8") as lzf:
+            lzf.write(data)
+            lzf.write(self._separator)
             lzf.flush()
 
-    def read(self) -> List[str]:
+    def read(self) -> Iterable[str]:
         try:
-            with lzma.open(self._file, "rb") as lzf:
-                return [d.decode().rstrip('\n') for d in lzf.readlines()]
+            with lzma.open(self._file, "rt", encoding="utf-8", newline=self._separator) as lzf:
+                for line in lzf.readlines():
+                    assert isinstance(line, str)
+                    line = line.rstrip(self._separator)
+                    yield line
+
         except FileNotFoundError:
             return []
 

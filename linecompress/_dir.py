@@ -85,10 +85,12 @@ class LinesDir:
     def __init__(self,
                  path: Path,
                  subdirs: int = 2,
-                 max_file_size: int = 30 * 1024 * 1024):
+                 max_file_size: int = 30 * 1024 * 1024,
+                 separator='\n'):
         self._path = path
         self._subdirs = subdirs
         self.max_file_size = max_file_size
+        self._separator = separator
 
     def _recurse_files(self, reverse: bool) -> Iterable[Path]:
         return _recurse_paths(parent=self._path,
@@ -116,13 +118,13 @@ class LinesDir:
         # file is ok
         return last
 
-    def add(self, text: str):
+    def write(self, text: str):
         path = self._file_for_appending()
         path.parent.mkdir(parents=True, exist_ok=True)
-        LinesFile(path).add(text)
+        LinesFile(path, separator=self._separator).write(text)
 
-    def iter_lines(self) -> Iterable[str]:
+    def read(self) -> Iterable[str]:
         for file in self._recurse_files(reverse=False):
-            lf = LinesFile(file)
+            lf = LinesFile(file, separator=self._separator)
             for line in lf.read():
                 yield line

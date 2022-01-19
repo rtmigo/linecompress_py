@@ -230,7 +230,7 @@ class TestFillDir(unittest.TestCase):
             ld = LinesDir(path=parent, max_file_size=150)
 
             def add_random_line():
-                ld.add(_rnd(50))
+                ld.write(_rnd(50))
 
             def expect(fn):
                 self.assertEqual(ld._file_for_appending(),
@@ -251,15 +251,32 @@ class TestFillDir(unittest.TestCase):
             parent = Path(tds)
             ld = LinesDir(path=parent, max_file_size=1024)
             for line in lines:
-                ld.add(line)
+                ld.write(line)
 
             created_files = sum(1 for _ in parent.rglob('*'))
             self.assertGreater(created_files, 50)
             self.assertLess(created_files, 500)
 
             lines_read = 0
-            for a, b in zip(ld.iter_lines(), lines):
+            for a, b in zip(ld.read(), lines):
                 lines_read += 1
                 self.assertEqual(a, b)
 
             self.assertEqual(lines_read, 1130)
+
+    def test_separators(self):
+        with TemporaryDirectory() as tds:
+            ld = LinesDir(path=Path(tds))
+            ld.write('line a')
+            ld.write('line b')
+            with self.assertRaises(ValueError):
+                ld.write('line c\nline d')
+            self.assertEqual(list(ld.read()), ['line a', 'line b'])
+
+        with TemporaryDirectory() as tds:
+            ld = LinesDir(path=Path(tds), separator='\r\n')
+            ld.write('line a')
+            ld.write('line b')
+            ld.write('line c\nline d')
+            self.assertEqual(list(ld.read()),
+                             ['line a', 'line b', 'line c\nline d'])
