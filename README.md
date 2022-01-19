@@ -1,3 +1,5 @@
+# [linecompress](https://github.com/rtmigo/linecompress_py#readme)
+
 ## LinesFile
 
 `LinesFile` keeps strings in a LZMA compressed binary file.
