@@ -10,30 +10,30 @@ class TestFile(unittest.TestCase):
         with TemporaryDirectory() as tds:
             file = Path(tds) / "data.xz"
             cl = LinesFile(file)
-            cl.write('line one')
-            cl.write('line two')
+            cl.append('line one')
+            cl.append('line two')
 
-            self.assertEqual(list(cl.read()), ['line one', 'line two'])
+            self.assertEqual(list(cl), ['line one', 'line two'])
 
-            cl.write('Third line')
-            self.assertEqual(list(cl.read()),
+            cl.append('Third line')
+            self.assertEqual(list(cl),
                              ['line one', 'line two', 'Third line'])
 
     def test_read_empty(self):
         with TemporaryDirectory() as tds:
             file = Path(tds) / "data.xz"
             cl = LinesFile(file)
-            self.assertEqual(list(cl.read()), [])
+            self.assertEqual(list(cl), [])
 
     def test_add_empty(self):
         with TemporaryDirectory() as tds:
             file = Path(tds) / "data.xz"
             cl = LinesFile(file)
-            cl.write('')
-            cl.write('empty')
-            cl.write('')
-            cl.write('')
-            self.assertEqual(list(cl.read()), ['', 'empty', '', ''])
+            cl.append('')
+            cl.append('empty')
+            cl.append('')
+            cl.append('')
+            self.assertEqual(list(cl), ['', 'empty', '', ''])
 
     def test_size(self):
         with TemporaryDirectory() as tds:
@@ -44,7 +44,7 @@ class TestFile(unittest.TestCase):
                 self.assertFalse(file.exists())
                 self.assertEqual(cl.size, 0)
 
-            cl.write('Some data to be compressed')
+            cl.append('Some data to be compressed')
             self.assertEqual(cl.size, 84)
 
     # def test_other_separator(self):

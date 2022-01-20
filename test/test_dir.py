@@ -230,7 +230,7 @@ class TestFillDir(unittest.TestCase):
             ld = LinesDir(path=parent, max_file_size=150)
 
             def add_random_line():
-                ld.write(_rnd(50))
+                ld.append(_rnd(50))
 
             def expect(fn):
                 self.assertEqual(ld._file_for_appending(),
@@ -242,35 +242,56 @@ class TestFillDir(unittest.TestCase):
             add_random_line()
             expect('000/000/001.xz')
 
-    def test_holmes(self):
+
+
+
+class TestHolmes(unittest.TestCase):
+    td: TemporaryDirectory
+    parent: Path
+    original_lines: List[str]
+    lines_dir: LinesDir
+
+    @classmethod
+    def setUpClass(cls) -> None:
         source = Path(__file__).parent / "data" / "dancing.txt"
-        lines = source.read_text().splitlines()
-        self.assertEqual(len(lines), 1130)
+        cls.original_lines = source.read_text().splitlines()
 
-        with TemporaryDirectory() as tds:
-            parent = Path(tds)
-            ld = LinesDir(path=parent, max_file_size=1024)
-            for line in lines:
-                ld.write(line)
+        cls.td = TemporaryDirectory()
 
-            created_files = sum(1 for _ in parent.rglob('*'))
-            self.assertGreater(created_files, 50)
-            self.assertLess(created_files, 500)
+        cls.parent = Path(cls.td.name)
+        cls.lines_dir = LinesDir(path=cls.parent, max_file_size=1024)
+        for line in cls.original_lines:
+            cls.lines_dir.append(line)
 
-            with self.subTest("forward"):
-                lines_read = 0
-                for a, b in zip(ld.read(), lines):
-                    lines_read += 1
-                    self.assertEqual(a, b)
-                self.assertEqual(lines_read, 1130)
+    @classmethod
+    def tearDownClass(cls) -> None:
+        cls.td.cleanup()
 
-            with self.subTest("reverse"):
-                lines_read = 0
-                for a, b in zip(ld.read(reverse=True), reversed(lines)):
-                    lines_read += 1
-                    self.assertEqual(a, b)
-                self.assertEqual(lines_read, 1130)
+    def test_read_forward(self):
+        lines_read = 0
+        for a, b in zip(self.lines_dir.read(), self.original_lines):
+            lines_read += 1
+            self.assertEqual(a, b)
+        self.assertEqual(lines_read, 1130)
 
+    def test_read_reverse(self):
+        lines_read = 0
+        for a, b in zip(self.lines_dir.read(reverse=True),
+                        reversed(self.original_lines)):
+            lines_read += 1
+            self.assertEqual(a, b)
+        self.assertEqual(lines_read, 1130)
 
+    def test_read_as_iterable(self):
+        lines_read = 0
+        for a, b in zip(self.lines_dir, self.original_lines):
+            lines_read += 1
+            self.assertEqual(a, b)
+        self.assertEqual(lines_read, 1130)
 
-
+    def test_read_as_reversed_iterable(self):
+        lines_read = 0
+        for a, b in zip(reversed(self.lines_dir), reversed(self.original_lines)):
+            lines_read += 1
+            self.assertEqual(a, b)
+        self.assertEqual(lines_read, 1130)

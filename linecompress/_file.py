@@ -3,11 +3,11 @@ from pathlib import Path
 from typing import List, Iterable
 
 
-class LinesFile:
+class LinesFile(Iterable[str]):
     def __init__(self, file: Path):
         self._file = file
 
-    def write(self, data: str):
+    def append(self, data: str):
         if '\n' in data:
             raise ValueError('Newline in the data')
         with lzma.open(self._file, "at", encoding="utf-8", newline='\n') as lzf:
@@ -15,7 +15,7 @@ class LinesFile:
             lzf.write('\n')
             lzf.flush()
 
-    def read(self) -> Iterable[str]:
+    def __iter__(self):
         try:
             with lzma.open(self._file, "rt",
                            encoding="utf-8", newline='\n') as lzf:

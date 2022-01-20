@@ -17,13 +17,14 @@ from pathlib import Path
 from linecompress import LinesFile
 
 file = LinesFile(Path('/dir/file.xz'))
-file.write('Line one')
-file.write('Line two')
+file.append('Line one')
+file.append('Line two')
 
-file.read()  # ['Line one', 'Line two']
+# list all lines in the file    
+print(list(file))  # ['Line one', 'Line two']
 
-file.write('Line three')
-file.read()  # ['Line one', 'Line two', 'Line three']
+file.append('Line three')
+print(list(file))  # ['Line one', 'Line two', 'Line three']
 ```
 
 ## LinesDir
@@ -35,12 +36,17 @@ automatically creates new files when the size of the previous one gets too big.
 from pathlib import Path
 from linecompress import LinesDir
 
-storage = LinesDir(Path('/parent/dir'),
-                   max_file_size=1024 * 1024)
-storage.write('Line one')
-storage.write('Line two')
+directory = LinesDir(Path('/parent/dir'),
+                     max_file_size=1048576)
+directory.append('Line one')
+directory.append('Line two')
 
-for line in storage.read():
+# reading from oldest to newest
+for line in directory:
+    print(line)
+
+# reading from newest to oldest
+for line in reversed(directory):
     print(line)
 ```
 
