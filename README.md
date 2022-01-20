@@ -1,7 +1,12 @@
 # [linecompress](https://github.com/rtmigo/linecompress_py#readme)
 
-A solution for storing multiple text strings in compressed files. 
-Useful for storing log files.
+Library for storing multiple text strings in compressed files.
+
+Data can be decompressed not only with this library, but also with any archive
+utility that supports the XZ format.
+
+Lines do not need to be added all at once. You can add one at a time to the 
+end of an existing file or storage dir.
 
 ## LinesFile
 
