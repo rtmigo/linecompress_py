@@ -82,7 +82,7 @@ class NumberedFilePath:
         return result
 
 
-class LinesDir:
+class LinesDir(Iterable[str]):
     def __init__(self,
                  path: Path,
                  subdirs: int = 2,
@@ -117,15 +117,19 @@ class LinesDir:
         # file is ok
         return last
 
-    def write(self, text: str):
+    def append(self, text: str):
         path = self._file_for_appending()
         path.parent.mkdir(parents=True, exist_ok=True)
-        LinesFile(path).write(text)
+        LinesFile(path).append(text)
 
     def read(self, reverse: bool = False) -> Iterable[str]:
         for file in self._recurse_files(reverse=reverse):
             lf = LinesFile(file)
-            file_lines = reversed(list(lf.read())) if reverse else lf.read()
-
-            for line in file_lines:
+            for line in reversed(list(lf)) if reverse else lf:
                 yield line
+
+    def __iter__(self):
+        return self.read()
+
+    def __reversed__(self):
+        return self.read(reverse=True)
