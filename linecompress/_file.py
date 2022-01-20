@@ -4,24 +4,24 @@ from typing import List, Iterable
 
 
 class LinesFile:
-    def __init__(self, file: Path, separator = '\n'):
+    def __init__(self, file: Path):
         self._file = file
-        self._separator = separator
+        #self._separator = separator
 
     def write(self, data: str):
-        if self._separator in data:
+        if '\n' in data:
             raise ValueError('Newline in the data')
-        with lzma.open(self._file, "at", encoding="utf-8", newline=self._separator) as lzf:
+        with lzma.open(self._file, "at", encoding="utf-8", newline='\n') as lzf:
             lzf.write(data)
-            lzf.write(self._separator)
+            lzf.write('\n')
             lzf.flush()
 
     def read(self) -> Iterable[str]:
         try:
-            with lzma.open(self._file, "rt", encoding="utf-8", newline=self._separator) as lzf:
+            with lzma.open(self._file, "rt", encoding="utf-8", newline='\n') as lzf:
                 for line in lzf.readlines():
                     assert isinstance(line, str)
-                    line = line[:-len(self._separator)]
+                    line = line[:-1]
                     yield line
 
         except FileNotFoundError:

@@ -264,19 +264,19 @@ class TestFillDir(unittest.TestCase):
 
             self.assertEqual(lines_read, 1130)
 
-    def test_separators(self):
-        with TemporaryDirectory() as tds:
-            ld = LinesDir(path=Path(tds))
-            ld.write('line a')
-            ld.write('line b')
-            with self.assertRaises(ValueError):
-                ld.write('line c\nline d')
-            self.assertEqual(list(ld.read()), ['line a', 'line b'])
-
-        with TemporaryDirectory() as tds:
-            ld = LinesDir(path=Path(tds), separator='\r\n')
-            ld.write('line a')
-            ld.write('line b')
-            ld.write('line c\nline d')
-            self.assertEqual(list(ld.read()),
-                             ['line a', 'line b', 'line c\nline d'])
+    # def test_separators(self):
+    #     with TemporaryDirectory() as tds:
+    #         ld = LinesDir(path=Path(tds))
+    #         ld.write('line a')
+    #         ld.write('line b')
+    #         with self.assertRaises(ValueError):
+    #             ld.write('line c\nline d')
+    #         self.assertEqual(list(ld.read()), ['line a', 'line b'])
+    #
+    #     with TemporaryDirectory() as tds:
+    #         ld = LinesDir(path=Path(tds), separator='\r\n')
+    #         ld.write('line a')
+    #         ld.write('line b')
+    #         ld.write('line c\nline d')
+    #         self.assertEqual(list(ld.read()),
+    #                          ['line a', 'line b', 'line c\nline d'])

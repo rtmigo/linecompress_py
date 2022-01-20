@@ -47,13 +47,13 @@ class TestFile(unittest.TestCase):
             cl.write('Some data to be compressed')
             self.assertEqual(cl.size, 84)
 
-    def test_other_separator(self):
-        with TemporaryDirectory() as tds:
-            file = Path(tds) / "data.xz"
-            cl = LinesFile(file, separator='\r\n')
-            cl.write('line one\nline two')
-            cl.write('line three')
-            with self.assertRaises(ValueError):
-                cl.write('bad\r\nbad')
-            self.assertEqual(list(cl.read()),
-                             ['line one\nline two', 'line three'])
+    # def test_other_separator(self):
+    #     with TemporaryDirectory() as tds:
+    #         file = Path(tds) / "data.xz"
+    #         cl = LinesFile(file, separator='\r\n')
+    #         cl.write('line one\nline two')
+    #         cl.write('line three')
+    #         with self.assertRaises(ValueError):
+    #             cl.write('bad\r\nbad')
+    #         self.assertEqual(list(cl.read()),
+    #                          ['line one\nline two', 'line three'])
