@@ -21,7 +21,7 @@ class LinesFile:
             with lzma.open(self._file, "rt", encoding="utf-8", newline=self._separator) as lzf:
                 for line in lzf.readlines():
                     assert isinstance(line, str)
-                    line = line.rstrip(self._separator)
+                    line = line[:-len(self._separator)]
                     yield line
 
         except FileNotFoundError:
