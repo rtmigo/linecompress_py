@@ -11,7 +11,7 @@ class LinesFile:
     def write(self, data: str):
         if self._separator in data:
             raise ValueError('Newline in the data')
-        with lzma.open(self._file, "at", encoding="utf-8") as lzf:
+        with lzma.open(self._file, "at", encoding="utf-8", newline=self._separator) as lzf:
             lzf.write(data)
             lzf.write(self._separator)
             lzf.flush()
