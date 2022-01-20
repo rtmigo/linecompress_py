@@ -242,7 +242,7 @@ class TestFillDir(unittest.TestCase):
             add_random_line()
             expect('000/000/001.xz')
 
-    def test_reading(self):
+    def test_holmes(self):
         source = Path(__file__).parent / "data" / "dancing.txt"
         lines = source.read_text().splitlines()
         self.assertEqual(len(lines), 1130)
@@ -257,26 +257,20 @@ class TestFillDir(unittest.TestCase):
             self.assertGreater(created_files, 50)
             self.assertLess(created_files, 500)
 
-            lines_read = 0
-            for a, b in zip(ld.read(), lines):
-                lines_read += 1
-                self.assertEqual(a, b)
+            with self.subTest("forward"):
+                lines_read = 0
+                for a, b in zip(ld.read(), lines):
+                    lines_read += 1
+                    self.assertEqual(a, b)
+                self.assertEqual(lines_read, 1130)
 
-            self.assertEqual(lines_read, 1130)
+            with self.subTest("reverse"):
+                lines_read = 0
+                for a, b in zip(ld.read(reverse=True), reversed(lines)):
+                    lines_read += 1
+                    self.assertEqual(a, b)
+                self.assertEqual(lines_read, 1130)
 
-    # def test_separators(self):
-    #     with TemporaryDirectory() as tds:
-    #         ld = LinesDir(path=Path(tds))
-    #         ld.write('line a')
-    #         ld.write('line b')
-    #         with self.assertRaises(ValueError):
-    #             ld.write('line c\nline d')
-    #         self.assertEqual(list(ld.read()), ['line a', 'line b'])
-    #
-    #     with TemporaryDirectory() as tds:
-    #         ld = LinesDir(path=Path(tds), separator='\r\n')
-    #         ld.write('line a')
-    #         ld.write('line b')
-    #         ld.write('line c\nline d')
-    #         self.assertEqual(list(ld.read()),
-    #                          ['line a', 'line b', 'line c\nline d'])
+
+
+

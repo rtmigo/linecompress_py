@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import re
 from pathlib import Path
 from typing import List, Optional, Iterable
 
@@ -87,11 +86,10 @@ class LinesDir:
     def __init__(self,
                  path: Path,
                  subdirs: int = 2,
-                 max_file_size: int = 30 * 1024 * 1024):
+                 max_file_size: int = 4 * 1024 * 1024):
         self._path = path
         self._subdirs = subdirs
         self.max_file_size = max_file_size
-
 
     def _recurse_files(self, reverse: bool) -> Iterable[Path]:
         return _recurse_paths(parent=self._path,
@@ -124,8 +122,10 @@ class LinesDir:
         path.parent.mkdir(parents=True, exist_ok=True)
         LinesFile(path).write(text)
 
-    def read(self) -> Iterable[str]:
-        for file in self._recurse_files(reverse=False):
+    def read(self, reverse: bool = False) -> Iterable[str]:
+        for file in self._recurse_files(reverse=reverse):
             lf = LinesFile(file)
-            for line in lf.read():
+            file_lines = reversed(list(lf.read())) if reverse else lf.read()
+
+            for line in file_lines:
                 yield line

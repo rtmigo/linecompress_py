@@ -21,7 +21,7 @@ setup(
     author_email="ortemeo@gmail.com",
     url='https://github.com/rtmigo/spacy_installer_py#readme',
 
-    python_requires='>=3.6',
+    python_requires='>=3.7',  # from future import annotations
     install_requires=[""],
     packages=['linecompress'],
 
@@ -37,7 +37,6 @@ setup(
     classifiers=[
         'Development Status :: 3 - Alpha',
         'License :: OSI Approved :: MIT License',
-        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
