@@ -6,7 +6,6 @@ from typing import List, Iterable
 class LinesFile:
     def __init__(self, file: Path):
         self._file = file
-        #self._separator = separator
 
     def write(self, data: str):
         if '\n' in data:
@@ -18,7 +17,8 @@ class LinesFile:
 
     def read(self) -> Iterable[str]:
         try:
-            with lzma.open(self._file, "rt", encoding="utf-8", newline='\n') as lzf:
+            with lzma.open(self._file, "rt",
+                           encoding="utf-8", newline='\n') as lzf:
                 for line in lzf.readlines():
                     assert isinstance(line, str)
                     line = line[:-1]
