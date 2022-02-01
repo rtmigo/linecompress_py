@@ -91,6 +91,10 @@ class LinesDir(Iterable[str]):
         self._subdirs = subdirs
         self.max_file_size = max_file_size
 
+    @property
+    def path(self):
+        return self._path
+
     def _recurse_files(self, reverse: bool) -> Iterable[Path]:
         return _recurse_paths(parent=self._path,
                               go_deeper=self._subdirs,
