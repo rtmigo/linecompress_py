@@ -3,9 +3,9 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from linecompress import LinesFile
-from linecompress._file import _remove_suffix, _compressed, _decompressed, \
-    _dirty
+
+from linecompress._file import _remove_suffix, to_compressed_path, to_rawdata_path, \
+    to_dirty_path, LinesFile
 
 
 class TestFile(unittest.TestCase):
@@ -105,11 +105,11 @@ class TestFile(unittest.TestCase):
                         Path('/path/to/my.file.name.txt.xz.tmp')]
         for src in source_names:
             self.assertEqual(
-                _compressed(src),
+                to_compressed_path(src),
                 Path('/path/to/my.file.name.txt.xz'))
             self.assertEqual(
-                _dirty(src),
+                to_dirty_path(src),
                 Path('/path/to/my.file.name.txt.xz.tmp'))
             self.assertEqual(
-                _decompressed(src),
+                to_rawdata_path(src),
                 Path('/path/to/my.file.name.txt'))

@@ -3,8 +3,8 @@ from __future__ import annotations
 from pathlib import Path
 from typing import List, Optional, Iterable
 
-from linecompress import LinesFile
-from linecompress._file import is_compressed_name, is_rawtext_name
+
+from linecompress._file import is_compressed_path, is_rawdata_path, LinesFile
 from linecompress._search_last import _recurse_paths, _num_prefix_str
 
 
@@ -87,12 +87,11 @@ class LinesDir(Iterable[str]):
     def __init__(self,
                  path: Path,
                  subdirs: int = 2,
-                 max_file_size: int = 256 * 1024,
-                 suffix: str = '.txt.xz'):
+                 buffer_size: int = 1000 * 1000):
         self._path = path
         self._subdirs = subdirs
-        self.max_file_size = max_file_size
-        self._suffix = suffix
+        self.max_file_size = buffer_size
+        #self._suffix = suffix
 
     @property
     def path(self):
@@ -109,7 +108,7 @@ class LinesDir(Iterable[str]):
         return None
 
     def _compressed_before_or_just_now(self, file: Path) -> bool:
-        if is_compressed_name(file):
+        if is_compressed_path(file):
             return True
         if file.stat().st_size >= self.max_file_size:
             assert file.exists()
@@ -133,7 +132,7 @@ class LinesDir(Iterable[str]):
             return NumberedFilePath.from_path(last, subdirs=self._subdirs) \
                 .next.path
         # file is ok
-        assert is_rawtext_name(last)
+        assert is_rawdata_path(last)
         return last
 
     def append(self, text: str):
