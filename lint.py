@@ -6,6 +6,7 @@ def lint():
     print("Running pylint...")
     package_dir_path = 'linecompress'
     r = subprocess.call([sys.executable, '-m', 'pylint', package_dir_path,
+                         '--disable=invalid-name',
                          '--disable=missing-module-docstring',
                          '--disable=missing-class-docstring',
                          '--disable=missing-function-docstring', ])
