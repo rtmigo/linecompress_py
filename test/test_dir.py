@@ -236,13 +236,17 @@ class TestFillDir(unittest.TestCase):
                 self.assertEqual(ld._file_for_appending(),
                                  parent / fn)
 
-            expect('000/000/000.xz')
+            expect('000/000/000.txt')
             add_random_line()
-            expect('000/000/000.xz')
+            expect('000/000/000.txt')
             add_random_line()
-            expect('000/000/001.xz')
+            expect('000/000/000.txt')
 
+            # размер файла уже максимальный - и следующий раз мы будем
+            # добавлять к другому файлу
 
+            add_random_line()
+            expect('000/000/001.txt')
 
 
 class TestHolmes(unittest.TestCase):
@@ -291,7 +295,8 @@ class TestHolmes(unittest.TestCase):
 
     def test_read_as_reversed_iterable(self):
         lines_read = 0
-        for a, b in zip(reversed(self.lines_dir), reversed(self.original_lines)):
+        for a, b in zip(reversed(self.lines_dir),
+                        reversed(self.original_lines)):
             lines_read += 1
             self.assertEqual(a, b)
         self.assertEqual(lines_read, 1130)

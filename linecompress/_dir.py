@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import List, Optional, Iterable
 
 from linecompress import LinesFile
+from linecompress._file import is_compressed_name, is_rawtext_name
 from linecompress._search_last import _recurse_paths, _num_prefix_str
 
 
@@ -86,10 +87,12 @@ class LinesDir(Iterable[str]):
     def __init__(self,
                  path: Path,
                  subdirs: int = 2,
-                 max_file_size: int = 4 * 1024 * 1024):
+                 max_file_size: int = 256 * 1024,
+                 suffix: str = '.txt.xz'):
         self._path = path
         self._subdirs = subdirs
         self.max_file_size = max_file_size
+        self._suffix = suffix
 
     @property
     def path(self):
@@ -105,6 +108,16 @@ class LinesDir(Iterable[str]):
             return first
         return None
 
+    def _compressed_before_or_just_now(self, file: Path) -> bool:
+        if is_compressed_name(file):
+            return True
+        if file.stat().st_size >= self.max_file_size:
+            assert file.exists()
+            LinesFile(file).compress()
+            assert not file.exists()  # raw text removed
+            return True
+        return False
+
     def _file_for_appending(self) -> Path:
         """Если файл с максимальным числовым именем не особо большой,
         возвращаем его. Иначе возвращаем новое имя файла.
@@ -113,12 +126,15 @@ class LinesDir(Iterable[str]):
         if last is None:
             # file does not exist
             return NumberedFilePath(self._path, [0] * (self._subdirs + 1),
-                                    '.xz').path
-        if last.stat().st_size >= self.max_file_size:
-            # file is too large
+                                    ".txt").path
+        print(last)
+        if self._compressed_before_or_just_now(last):
+            # we cannot append to last file, so we'll return a new
+            # name (for a file that does not exist yet)
             return NumberedFilePath.from_path(last, subdirs=self._subdirs) \
                 .next.path
         # file is ok
+        assert is_rawtext_name(last)
         return last
 
     def append(self, text: str):

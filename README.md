@@ -7,7 +7,7 @@ compression utility with .xz support.
 
 Lines can be appended to existing archives one by one.
 
-## LinesFile
+## LinesFile  (NEEDS TO BE REWRITTEN!)
 
 `LinesFile` keeps strings in a LZMA compressed binary file.
 
@@ -59,7 +59,7 @@ for line in reversed(lines_dir):
     print(line)
 ```
 
-### Directory structure
+### Directory structure  (NEEDS TO BE REWRITTEN!)
 
 ```
 000/000/000.xz  (1 MB + one line)
@@ -72,7 +72,7 @@ for line in reversed(lines_dir):
 000/001/234.xz  (the last file may be less than 1 MB) 
 ```
 
-### Limitations
+### Limitations (NEEDS TO BE REWRITTEN!)
 
 The default maximum file size is 1 million bytes (decimal megabyte). The
 directory will hold up to a billion of these files. Thus, the maximum total
