@@ -127,7 +127,6 @@ class LinesDir(Iterable[str]):
             # file does not exist
             return NumberedFilePath(self._path, [0] * (self._subdirs + 1),
                                     ".txt").path
-        print(last)
         if self._compressed_before_or_just_now(last):
             # we cannot append to last file, so we'll return a new
             # name (for a file that does not exist yet)
