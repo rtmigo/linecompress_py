@@ -7,39 +7,14 @@ compression utility with .xz support.
 
 Lines can be appended to existing archives one by one.
 
-## LinesFile  (NEEDS TO BE REWRITTEN!)
-
-`LinesFile` keeps strings in a LZMA compressed binary file.
-
-```python3
-from pathlib import Path
-from linecompress import LinesFile
-
-lines_file = LinesFile(Path('/dir/lines_file.xz'))
-lines_file.append('Line one')
-lines_file.append('Line two')
-
-# list all lines_file in the lines_file    
-print(list(lines_file))  # ['Line one', 'Line two']
-
-lines_file.append('Line three')
-print(list(lines_file))  # ['Line one', 'Line two', 'Line three']
-```
-
 ## LinesDir
 
 `LinesDir` saves data to multiple files, making sure the files don't get too
 big.
 
-The files are filled sequentially: first we write only to `000.xz`, then only
-to `001.xz`, and so on.
+The files are filled sequentially: first we write only to `000.txt.xz`, then 
+only to `001.txt.xz`, and so on.
 
-By default, the maxim
-
-Use `LinesDir`:
-
-- if you need to read lines in reverse order
-- if you synchronize the files through cloud services
 
 ```python3
 from pathlib import Path
@@ -59,23 +34,29 @@ for line in reversed(lines_dir):
     print(line)
 ```
 
-### Directory structure  (NEEDS TO BE REWRITTEN!)
+### Directory structure
 
 ```
-000/000/000.xz  (1 MB + one line)
-000/000/001.xz  (1 MB + one line)
-000/000/002.xz  (1 MB + one line)
+000/000/000.txt.xz 
+000/000/001.txt.xz 
+000/000/002.txt.xz 
 ...
-000/000/999.xz  (1 MB + one line)
-000/001/000.xz  (1 MB + one line)
-... 
-000/001/234.xz  (the last file may be less than 1 MB) 
+000/000/999.txt.xz 
+000/001/000.txt.xz
+...
+000/001/233.txt.xz 
+000/001/234.txt 
 ```
 
-### Limitations (NEEDS TO BE REWRITTEN!)
+The last file usually contains raw text, not yet compressed.
 
-The default maximum file size is 1 million bytes (decimal megabyte). The
-directory will hold up to a billion of these files. Thus, the maximum total
+### Limitations
+
+The default maximum file size is 1 million bytes (decimal megabyte).
+
+This is the size of text data *before* compression.
+
+The directory will hold up to a billion of these files. Thus, the maximum total
 storage size is one decimal petabyte.
 
 By changing the value of the `subdirs` argument, we change the maximum number of
@@ -91,6 +72,11 @@ With the default file size 1MB we get the following limits:
 | `subdirs=1` | `000/000.xz`         | terabyte     |
 | `subdirs=2` | `000/000/000.xz`     | petabyte     |
 | `subdirs=3` | `000/000/000/000.xz` | exabyte      |
+
+These are the data sizes before compression. The actual size of the files on 
+the disk will most likely be smaller.
+
+Adjusting the limits:
 
 ```python3
 from pathlib import Path
@@ -112,12 +98,12 @@ The file size can also be adjusted.
 from pathlib import Path
 from linecompress import LinesDir
 
-# the default file size is 1 MB
+# the default buffer size is 1 MB
 pb = LinesDir(Path('/max/petabyte'))
 
 # set file size to 5 MB
 pb5 = LinesDir(Path('/max/5_petabytes'),
-               file_size=5000000)
+               buffer_size=5000000)
 ```
 
 * With larger files, we get better compression and less load on the file system.

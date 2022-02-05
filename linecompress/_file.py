@@ -16,39 +16,39 @@ def _remove_suffix(basename: str) -> str:
     raise ValueError
 
 
-def _compressed(file: Path) -> Path:
+def to_compressed_path(file: Path) -> Path:
     return file.parent / (_remove_suffix(file.name) + _COMPRESSED_SUFFIX)
 
 
-def _dirty(file: Path) -> Path:
+def to_dirty_path(file: Path) -> Path:
     return file.parent / (_remove_suffix(file.name) + _DIRTY_SUFFIX)
 
 
-def _decompressed(file: Path) -> Path:
+def to_rawdata_path(file: Path) -> Path:
     return file.parent / (_remove_suffix(file.name) + _DECOMPRESSED_SUFFIX)
 
 
-def is_compressed_name(file: Path) -> bool:
+def is_compressed_path(file: Path) -> bool:
     return file.name.endswith(_COMPRESSED_SUFFIX)
 
 
-def is_dirty_name(file: Path) -> bool:
+def is_dirty_path(file: Path) -> bool:
     return file.name.endswith(_DIRTY_SUFFIX)
 
 
-def is_rawtext_name(file: Path) -> bool:
+def is_rawdata_path(file: Path) -> bool:
     return file.name.endswith(_DECOMPRESSED_SUFFIX)
 
 
 class LinesFile(Iterable[str]):
     def __init__(self, file: Path):
 
-        dirty = _dirty(file)
+        dirty = to_dirty_path(file)
         if dirty.exists():
             os.remove(dirty)
 
-        compressed = _compressed(file)
-        raw = _decompressed(file)
+        compressed = to_compressed_path(file)
+        raw = to_rawdata_path(file)
 
         if compressed.exists():
             self._file = compressed
@@ -69,8 +69,8 @@ class LinesFile(Iterable[str]):
             # todo test
             raise Exception("Cannot compress already compressed")
 
-        temp_name = _dirty(self._file)
-        compressed_name = _compressed(self._file)
+        temp_name = to_dirty_path(self._file)
+        compressed_name = to_compressed_path(self._file)
         with lzma.open(temp_name, 'wb') as lzma_out:
             with self._file.open('rb') as text_in:
                 shutil.copyfileobj(text_in, lzma_out)

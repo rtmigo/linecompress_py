@@ -1,7 +1,7 @@
 import unittest
 from pathlib import Path
 
-from linecompress import LinesFile
+from linecompress._file import LinesFile
 
 p = Path(__file__).parent / "data" / "cross_platform.txt.xz"
 

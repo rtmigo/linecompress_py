@@ -227,7 +227,7 @@ class TestFillDir(unittest.TestCase):
     def test_writing(self):
         with TemporaryDirectory() as tds:
             parent = Path(tds)
-            ld = LinesDir(path=parent, max_file_size=150)
+            ld = LinesDir(path=parent, buffer_size=150)
 
             def add_random_line():
                 ld.append(_rnd(50))
@@ -263,7 +263,7 @@ class TestHolmes(unittest.TestCase):
         cls.td = TemporaryDirectory()
 
         cls.parent = Path(cls.td.name)
-        cls.lines_dir = LinesDir(path=cls.parent, max_file_size=1024)
+        cls.lines_dir = LinesDir(path=cls.parent, buffer_size=1024)
         for line in cls.original_lines:
             cls.lines_dir.append(line)
 
