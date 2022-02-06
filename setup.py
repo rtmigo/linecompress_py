@@ -16,7 +16,7 @@ name = "linecompress"
 
 setup(
     name=name,
-    version='0.3.0',
+    version='0.4.0',
     author="Artёm IG",
     author_email="ortemeo@gmail.com",
     url='https://github.com/rtmigo/linecompress_py#readme',

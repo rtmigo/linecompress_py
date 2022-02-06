@@ -3,7 +3,7 @@ from pathlib import Path
 
 from linecompress._file import LinesFile
 
-p = Path(__file__).parent / "data" / "cross_platform.txt.xz"
+p = Path(__file__).parent / "data" / "cross_platform.txt.gz"
 
 
 class TestCross(unittest.TestCase):

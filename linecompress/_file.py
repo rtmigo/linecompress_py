@@ -1,12 +1,12 @@
-import lzma
+import gzip
 import os
 import shutil
 from pathlib import Path
 from typing import Iterable, Union, BinaryIO
 
-_COMPRESSED_SUFFIX = '.txt.xz'
+_COMPRESSED_SUFFIX = '.txt.gz'
 _DECOMPRESSED_SUFFIX = '.txt'
-_DIRTY_SUFFIX = '.txt.xz.tmp'
+_DIRTY_SUFFIX = '.txt.gz.tmp'
 
 
 def _remove_suffix(basename: str) -> str:
@@ -71,7 +71,7 @@ class LinesFile(Iterable[str]):
 
         temp_name = to_dirty_path(self._file)
         compressed_name = to_compressed_path(self._file)
-        with lzma.open(temp_name, 'wb') as lzma_out:
+        with gzip.open(temp_name, 'wb') as lzma_out:
             with self._file.open('rb') as text_in:
                 shutil.copyfileobj(text_in, lzma_out)
         os.rename(temp_name, compressed_name)
@@ -92,7 +92,7 @@ class LinesFile(Iterable[str]):
         f = None
         try:
             if self.is_compressed:
-                f = lzma.open(self._file, "rt", encoding="utf-8", newline='\n')
+                f = gzip.open(self._file, "rt", encoding="utf-8", newline='\n')
             else:
                 f = self._file.open("rt", encoding="utf-8", newline='\n')
 
@@ -107,10 +107,10 @@ class LinesFile(Iterable[str]):
                 f.close()
 
     def iter_byte_lines(self) -> Iterable[bytes]:
-        f: Union[BinaryIO, lzma.LZMAFile, None] = None
+        f: Union[BinaryIO, gzip.LZMAFile, None] = None
         try:
             if self.is_compressed:
-                f = lzma.open(self._file, "rb")
+                f = gzip.open(self._file, "rb")
             else:
                 f = self._file.open("rb")
 
