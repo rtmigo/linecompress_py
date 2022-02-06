@@ -90,7 +90,7 @@ class LinesDir(Iterable[str]):
         self._path = path
         self._subdirs = subdirs
         self.max_file_size = buffer_size
-        #self._suffix = suffix
+        # self._suffix = suffix
 
     @property
     def path(self):
@@ -150,7 +150,6 @@ class LinesDir(Iterable[str]):
         for file in self._recurse_files(reverse=reverse):
             lf = LinesFile(file)
 
-
             file_iterable = \
                 lf.iter_byte_lines() if binary else lf.iter_str_lines()
             if reverse:
@@ -158,9 +157,16 @@ class LinesDir(Iterable[str]):
             for line in file_iterable:
                 yield line  # type: ignore
 
+    def iter_byte_lines(self, reverse: bool = False) -> Iterable[bytes]:
+        # todo test
+        return self._iter(binary=True, reverse=reverse)
+
+    def iter_str_lines(self, reverse: bool = False) -> Iterable[bytes]:
+        # todo test
+        return self._iter(binary=False, reverse=reverse)
 
     def __iter__(self):
-        return self._iter(binary=False, reverse=False)
+        return self.iter_str_lines()
 
     def __reversed__(self):
-        return self._iter(binary=False, reverse=True)
+        return self.iter_str_lines(reverse=True)
