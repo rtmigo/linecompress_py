@@ -16,7 +16,7 @@ name = "linecompress"
 
 setup(
     name=name,
-    version='0.1.3',
+    version='0.2.0',
     author="Artёm IG",
     author_email="ortemeo@gmail.com",
     url='https://github.com/rtmigo/spacy_installer_py#readme',

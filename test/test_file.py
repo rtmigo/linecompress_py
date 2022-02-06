@@ -8,6 +8,7 @@ from linecompress._file import _remove_suffix, to_compressed_path, to_rawdata_pa
     to_dirty_path, LinesFile
 
 
+
 class TestFile(unittest.TestCase):
     def test_cl(self):
         with TemporaryDirectory() as tds:
@@ -113,3 +114,18 @@ class TestFile(unittest.TestCase):
             self.assertEqual(
                 to_rawdata_path(src),
                 Path('/path/to/my.file.name.txt'))
+
+
+class TestBinary(unittest.TestCase):
+    def test(self):
+        with TemporaryDirectory() as tds:
+            file = Path(tds) / "data.txt.xz"
+            cl = LinesFile(file)
+            cl.append('line one')
+            cl.append('line two')
+
+            self.assertEqual(list(cl.iter_byte_lines()), [b'line one', b'line two'])
+
+            cl.append('Third line')
+            self.assertEqual(list(cl.iter_byte_lines()),
+                             [b'line one', b'line two', b'Third line'])

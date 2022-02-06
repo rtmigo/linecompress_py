@@ -1,8 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import List, Optional, Iterable
-
+from typing import List, Optional, Iterable, Union
 
 from linecompress._file import is_compressed_path, is_rawdata_path, LinesFile
 from linecompress._search_last import _recurse_paths, _num_prefix_str
@@ -140,14 +139,28 @@ class LinesDir(Iterable[str]):
         path.parent.mkdir(parents=True, exist_ok=True)
         LinesFile(path).append(text)
 
-    def read(self, reverse: bool = False) -> Iterable[str]:
+    # def read(self, reverse: bool = False) -> Iterable[str]:
+    #     for file in self._recurse_files(reverse=reverse):
+    #         lf = LinesFile(file)
+    #         for line in reversed(list(lf)) if reverse else lf:
+    #             yield line
+
+    def _iter(self, binary: bool, reverse: bool = False) \
+            -> Union[Iterable[str], Iterable[bytes]]:
         for file in self._recurse_files(reverse=reverse):
             lf = LinesFile(file)
-            for line in reversed(list(lf)) if reverse else lf:
-                yield line
+
+
+            file_iterable = \
+                lf.iter_byte_lines() if binary else lf.iter_str_lines()
+            if reverse:
+                file_iterable = reversed(list(file_iterable))
+            for line in file_iterable:
+                yield line  # type: ignore
+
 
     def __iter__(self):
-        return self.read()
+        return self._iter(binary=False, reverse=False)
 
     def __reversed__(self):
-        return self.read(reverse=True)
+        return self._iter(binary=False, reverse=True)

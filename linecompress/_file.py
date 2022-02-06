@@ -2,7 +2,7 @@ import lzma
 import os
 import shutil
 from pathlib import Path
-from typing import Iterable
+from typing import Iterable, Union, BinaryIO
 
 _COMPRESSED_SUFFIX = '.txt.xz'
 _DECOMPRESSED_SUFFIX = '.txt'
@@ -88,7 +88,7 @@ class LinesFile(Iterable[str]):
             outfile.write('\n')
             outfile.flush()
 
-    def __iter__(self):
+    def iter_str_lines(self) -> Iterable[str]:
         f = None
         try:
             if self.is_compressed:
@@ -97,15 +97,35 @@ class LinesFile(Iterable[str]):
                 f = self._file.open("rt", encoding="utf-8", newline='\n')
 
             for line in f.readlines():
-                assert isinstance(line, str)
                 line = line[:-1]
                 yield line
 
         except FileNotFoundError:
-            return []
+            pass
         finally:
             if f is not None:
                 f.close()
+
+    def iter_byte_lines(self) -> Iterable[bytes]:
+        f: Union[BinaryIO, lzma.LZMAFile, None] = None
+        try:
+            if self.is_compressed:
+                f = lzma.open(self._file, "rb")
+            else:
+                f = self._file.open("rb")
+
+            for line in f.readlines():
+                line = line[:-1]
+                yield line
+
+        except FileNotFoundError:
+            pass
+        finally:
+            if f is not None:
+                f.close()
+
+    def __iter__(self):
+        return self.iter_str_lines()
 
     @property
     def size(self) -> int:
