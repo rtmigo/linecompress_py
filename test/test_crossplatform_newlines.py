@@ -20,6 +20,7 @@ def _create_data():
     lf.append('Line one')
     lf.append('Line two')
     lf.append('Line three')
+    lf.compress()
 
 if __name__ == "__main__":
     _create_data()
