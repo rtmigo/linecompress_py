@@ -3,10 +3,9 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-
-from linecompress._file import _remove_suffix, to_compressed_path, to_rawdata_path, \
+from linecompress._file import _remove_suffix, to_compressed_path, \
+    to_rawdata_path, \
     to_dirty_path, LinesFile
-
 
 
 class TestFile(unittest.TestCase):
@@ -124,7 +123,8 @@ class TestBinary(unittest.TestCase):
             cl.append('line one')
             cl.append('line two')
 
-            self.assertEqual(list(cl.iter_byte_lines()), [b'line one', b'line two'])
+            self.assertEqual(list(cl.iter_byte_lines()),
+                             [b'line one', b'line two'])
 
             cl.append('Third line')
             self.assertEqual(list(cl.iter_byte_lines()),

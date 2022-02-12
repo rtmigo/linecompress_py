@@ -35,13 +35,13 @@ class NumberedFilePath:
         for n in nums:
             if not 0 <= n <= 999:
                 raise ValueError(n)
-        self.subs = nums
+        self.nums = nums
         self.suffix = suffix
 
     @property
     def path(self):
         result = self.root
-        for s in self.subs:
+        for s in self.nums:
             result = result / f'{s:03d}'
         if self.suffix:
             result = result.parent / (result.name + self.suffix)
@@ -57,8 +57,8 @@ class NumberedFilePath:
     def next(self):
         return NumberedFilePath(
             root=self.root,
-            nums=_split_nums(_combine_nums(self.subs) + 1,
-                             length=len(self.subs)),
+            nums=_split_nums(_combine_nums(self.nums) + 1,
+                             length=len(self.nums)),
             suffix=self.suffix)
 
     @staticmethod
@@ -139,11 +139,6 @@ class LinesDir(Iterable[str]):
         path.parent.mkdir(parents=True, exist_ok=True)
         LinesFile(path).append(text)
 
-    # def read(self, reverse: bool = False) -> Iterable[str]:
-    #     for file in self._recurse_files(reverse=reverse):
-    #         lf = LinesFile(file)
-    #         for line in reversed(list(lf)) if reverse else lf:
-    #             yield line
 
     def _iter(self, binary: bool, reverse: bool = False) \
             -> Union[Iterable[str], Iterable[bytes]]:
