@@ -107,7 +107,7 @@ class LinesFile(Iterable[str]):
                 f.close()
 
     def iter_byte_lines(self) -> Iterable[bytes]:
-        f: Union[BinaryIO, gzip.LZMAFile, None] = None
+        f: Union[BinaryIO, gzip.GzipFile, None] = None
         try:
             if self.is_compressed:
                 f = gzip.open(self._file, "rb")
