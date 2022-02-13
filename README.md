@@ -5,8 +5,6 @@ Library for storing text lines in compressed files.
 It uses **.gz** compression format, so the data can be decompressed by any
 compression utility with .gz support.
 
-Lines can be appended to existing archives one by one.
-
 ## LinesDir
 
 `LinesDir` saves data to multiple files, making sure the files don't get too
@@ -110,7 +108,6 @@ pb5 = LinesDir(Path('/max/5_petabytes'),
 * With smaller files, we're much more efficient at iterating through lines in 
   reverse order.
 
-# Same library in Kotlin
+# See also
 
-This library repeats the functionality of the
-[Kotlin library](https://github.com/rtmigo/linecompress_kt).
+* [linecompress_kt](https://github.com/rtmigo/linecompress_kt) in Kotlin/JVM
