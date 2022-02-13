@@ -273,14 +273,14 @@ class TestHolmes(unittest.TestCase):
 
     def test_read_forward(self):
         lines_read = 0
-        for a, b in zip(self.lines_dir.read(), self.original_lines):
+        for a, b in zip(self.lines_dir, self.original_lines):
             lines_read += 1
             self.assertEqual(a, b)
         self.assertEqual(lines_read, 1130)
 
     def test_read_reverse(self):
         lines_read = 0
-        for a, b in zip(self.lines_dir.read(reverse=True),
+        for a, b in zip(reversed(self.lines_dir),
                         reversed(self.original_lines)):
             lines_read += 1
             self.assertEqual(a, b)

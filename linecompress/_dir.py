@@ -1,8 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import List, Optional, Iterable
-
+from typing import List, Optional, Iterable, Union
 
 from linecompress._file import is_compressed_path, is_rawdata_path, LinesFile
 from linecompress._search_last import _recurse_paths, _num_prefix_str
@@ -36,13 +35,13 @@ class NumberedFilePath:
         for n in nums:
             if not 0 <= n <= 999:
                 raise ValueError(n)
-        self.subs = nums
+        self.nums = nums
         self.suffix = suffix
 
     @property
     def path(self):
         result = self.root
-        for s in self.subs:
+        for s in self.nums:
             result = result / f'{s:03d}'
         if self.suffix:
             result = result.parent / (result.name + self.suffix)
@@ -58,8 +57,8 @@ class NumberedFilePath:
     def next(self):
         return NumberedFilePath(
             root=self.root,
-            nums=_split_nums(_combine_nums(self.subs) + 1,
-                             length=len(self.subs)),
+            nums=_split_nums(_combine_nums(self.nums) + 1,
+                             length=len(self.nums)),
             suffix=self.suffix)
 
     @staticmethod
@@ -91,7 +90,7 @@ class LinesDir(Iterable[str]):
         self._path = path
         self._subdirs = subdirs
         self.max_file_size = buffer_size
-        #self._suffix = suffix
+        # self._suffix = suffix
 
     @property
     def path(self):
@@ -140,14 +139,28 @@ class LinesDir(Iterable[str]):
         path.parent.mkdir(parents=True, exist_ok=True)
         LinesFile(path).append(text)
 
-    def read(self, reverse: bool = False) -> Iterable[str]:
+    def _iter(self, binary: bool, reverse: bool = False) \
+            -> Union[Iterable[str], Iterable[bytes]]:
         for file in self._recurse_files(reverse=reverse):
             lf = LinesFile(file)
-            for line in reversed(list(lf)) if reverse else lf:
-                yield line
+
+            file_iterable = \
+                lf.iter_byte_lines() if binary else lf.iter_str_lines()
+            if reverse:
+                file_iterable = reversed(list(file_iterable))
+            for line in file_iterable:
+                yield line  # type: ignore
+
+    def iter_byte_lines(self, reverse: bool = False) -> Iterable[bytes]:
+        # todo test
+        return self._iter(binary=True, reverse=reverse)  # type: ignore
+
+    def iter_str_lines(self, reverse: bool = False) -> Iterable[bytes]:
+        # todo test
+        return self._iter(binary=False, reverse=reverse)  # type: ignore
 
     def __iter__(self):
-        return self.read()
+        return self.iter_str_lines()
 
     def __reversed__(self):
-        return self.read(reverse=True)
+        return self.iter_str_lines(reverse=True)

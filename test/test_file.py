@@ -3,15 +3,15 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-
-from linecompress._file import _remove_suffix, to_compressed_path, to_rawdata_path, \
+from linecompress._file import _remove_suffix, to_compressed_path, \
+    to_rawdata_path, \
     to_dirty_path, LinesFile
 
 
 class TestFile(unittest.TestCase):
     def test_cl(self):
         with TemporaryDirectory() as tds:
-            file = Path(tds) / "data.txt.xz"
+            file = Path(tds) / "data.txt.gz"
             cl = LinesFile(file)
             cl.append('line one')
             cl.append('line two')
@@ -24,13 +24,13 @@ class TestFile(unittest.TestCase):
 
     def test_read_empty(self):
         with TemporaryDirectory() as tds:
-            file = Path(tds) / "data.txt.xz"
+            file = Path(tds) / "data.txt.gz"
             cl = LinesFile(file)
             self.assertEqual(list(cl), [])
 
     def test_add_empty(self):
         with TemporaryDirectory() as tds:
-            file = Path(tds) / "data.txt.xz"
+            file = Path(tds) / "data.txt.gz"
             cl = LinesFile(file)
             cl.append('')
             cl.append('empty')
@@ -40,7 +40,7 @@ class TestFile(unittest.TestCase):
 
     def test_size(self):
         with TemporaryDirectory() as tds:
-            file = Path(tds) / "data.txt.xz"
+            file = Path(tds) / "data.txt.gz"
             cl = LinesFile(file)
 
             for _ in range(2):
@@ -52,7 +52,7 @@ class TestFile(unittest.TestCase):
 
     def test_compressed_is_smaller(self):
         with TemporaryDirectory() as tds:
-            file = Path(tds) / "data.txt.xz"
+            file = Path(tds) / "data.txt.gz"
             cl = LinesFile(file)
 
             dancing_file = (Path(__file__).parent / "data" / "dancing.txt")
@@ -90,10 +90,10 @@ class TestFile(unittest.TestCase):
             _remove_suffix('my.file.name.txt'),
             'my.file.name')
         self.assertEqual(
-            _remove_suffix('my.file.name.txt.xz'),
+            _remove_suffix('my.file.name.txt.gz'),
             'my.file.name')
         self.assertEqual(
-            _remove_suffix('my.file.name.txt.xz.tmp'),
+            _remove_suffix('my.file.name.txt.gz.tmp'),
             'my.file.name')
         with self.assertRaises(ValueError):
             _remove_suffix('my.file.name.jpg')
@@ -101,15 +101,31 @@ class TestFile(unittest.TestCase):
     def test_name(self):
 
         source_names = [Path('/path/to/my.file.name.txt'),
-                        Path('/path/to/my.file.name.txt.xz'),
-                        Path('/path/to/my.file.name.txt.xz.tmp')]
+                        Path('/path/to/my.file.name.txt.gz'),
+                        Path('/path/to/my.file.name.txt.gz.tmp')]
         for src in source_names:
             self.assertEqual(
                 to_compressed_path(src),
-                Path('/path/to/my.file.name.txt.xz'))
+                Path('/path/to/my.file.name.txt.gz'))
             self.assertEqual(
                 to_dirty_path(src),
-                Path('/path/to/my.file.name.txt.xz.tmp'))
+                Path('/path/to/my.file.name.txt.gz.tmp'))
             self.assertEqual(
                 to_rawdata_path(src),
                 Path('/path/to/my.file.name.txt'))
+
+
+class TestBinary(unittest.TestCase):
+    def test(self):
+        with TemporaryDirectory() as tds:
+            file = Path(tds) / "data.txt.gz"
+            cl = LinesFile(file)
+            cl.append('line one')
+            cl.append('line two')
+
+            self.assertEqual(list(cl.iter_byte_lines()),
+                             [b'line one', b'line two'])
+
+            cl.append('Third line')
+            self.assertEqual(list(cl.iter_byte_lines()),
+                             [b'line one', b'line two', b'Third line'])

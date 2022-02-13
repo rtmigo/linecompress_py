@@ -1,19 +1,17 @@
 # [linecompress](https://github.com/rtmigo/linecompress_py#readme)
 
-Library for storing text strings in compressed files.
+Library for storing text lines in compressed files.
 
-It uses **.xz** compression format, so the data can be decompressed by any
-compression utility with .xz support.
-
-Lines can be appended to existing archives one by one.
+It uses **.gz** compression format, so the data can be decompressed by any
+compression utility with .gz support.
 
 ## LinesDir
 
 `LinesDir` saves data to multiple files, making sure the files don't get too
 big.
 
-The files are filled sequentially: first we write only to `000.txt.xz`, then 
-only to `001.txt.xz`, and so on.
+The files are filled sequentially: first we write only to `000.txt.gz`, then 
+only to `001.txt.gz`, and so on.
 
 
 ```python3
@@ -37,14 +35,14 @@ for line in reversed(lines_dir):
 ### Directory structure
 
 ```
-000/000/000.txt.xz 
-000/000/001.txt.xz 
-000/000/002.txt.xz 
+000/000/000.txt.gz 
+000/000/001.txt.gz 
+000/000/002.txt.gz 
 ...
-000/000/999.txt.xz 
-000/001/000.txt.xz
+000/000/999.txt.gz 
+000/001/000.txt.gz
 ...
-000/001/233.txt.xz 
+000/001/233.txt.gz 
 000/001/234.txt 
 ```
 
@@ -68,10 +66,10 @@ With the default file size 1MB we get the following limits:
 
 | subdirs     | file path            | max sum size |
 |-------------|----------------------|--------------|
-| `subdirs=0` | `000.xz`             | gigabyte     |
-| `subdirs=1` | `000/000.xz`         | terabyte     |
-| `subdirs=2` | `000/000/000.xz`     | petabyte     |
-| `subdirs=3` | `000/000/000/000.xz` | exabyte      |
+| `subdirs=0` | `000.gz`             | gigabyte     |
+| `subdirs=1` | `000/000.gz`         | terabyte     |
+| `subdirs=2` | `000/000/000.gz`     | petabyte     |
+| `subdirs=3` | `000/000/000/000.gz` | exabyte      |
 
 These are the data sizes before compression. The actual size of the files on 
 the disk will most likely be smaller.
@@ -109,3 +107,7 @@ pb5 = LinesDir(Path('/max/5_petabytes'),
 * With larger files, we get better compression and less load on the file system.
 * With smaller files, we're much more efficient at iterating through lines in 
   reverse order.
+
+# See also
+
+* [linecompress_kt](https://github.com/rtmigo/linecompress_kt) in Kotlin/JVM

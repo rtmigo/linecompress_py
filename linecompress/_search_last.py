@@ -69,7 +69,8 @@ def _recurse_paths(parent: Path, reverse: bool, go_deeper: int) \
     if go_deeper == 0:
         for result in _paths_sorted_by_num_prefix(parent, reverse=reverse):
             yield result
-    for sub in _paths_sorted_by_num_prefix(parent, reverse=reverse):
-        for result in _recurse_paths(
-                parent=sub, go_deeper=go_deeper - 1, reverse=reverse):
-            yield result
+    else:
+        for sub in _paths_sorted_by_num_prefix(parent, reverse=reverse):
+            for result in _recurse_paths(
+                    parent=sub, go_deeper=go_deeper - 1, reverse=reverse):
+                yield result
