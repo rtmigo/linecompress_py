@@ -113,4 +113,5 @@ pb5 = LinesDir(Path('/max/5_petabytes'),
 
 # See also
 
-* [linecompress_kt](https://github.com/rtmigo/linecompress_kt) in Kotlin/JVM
+* [linecompress_kt](https://github.com/rtmigo/linecompress_kt) – Kotlin/JVM 
+  library
