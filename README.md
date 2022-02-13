@@ -8,7 +8,13 @@ Library for storing text lines in compressed files.
 It uses **.gz** compression format, so the data can be decompressed by any
 compression utility with .gz support.
 
-## LinesDir
+# Install
+
+```
+pip3 install git+https://github.com/rtmigo/linecompress_py#egg=linecompress
+```
+
+# Use
 
 `LinesDir` saves data to multiple files, making sure the files don't get too
 big.
@@ -35,7 +41,7 @@ for line in reversed(lines_dir):
     print(line)
 ```
 
-### Directory structure
+# Directory structure
 
 ```
 000/000/000.txt.gz 
@@ -51,7 +57,7 @@ for line in reversed(lines_dir):
 
 The last file usually contains raw text, not yet compressed.
 
-### Limitations
+# Limitations
 
 The default maximum file size is 1 million bytes (decimal megabyte).
 
