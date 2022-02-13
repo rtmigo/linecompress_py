@@ -1,4 +1,7 @@
-# [linecompress](https://github.com/rtmigo/linecompress_py#readme)
+![Generic badge](https://img.shields.io/badge/CI_Python-3.7_.._3.10-blue.svg)
+![Generic badge](https://img.shields.io/badge/CI_OS-Linux_|_Windows-blue.svg)
+
+# [linecompress_py](https://github.com/rtmigo/linecompress_py#readme)
 
 Library for storing text lines in compressed files.
 
