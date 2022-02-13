@@ -109,3 +109,8 @@ pb5 = LinesDir(Path('/max/5_petabytes'),
 * With larger files, we get better compression and less load on the file system.
 * With smaller files, we're much more efficient at iterating through lines in 
   reverse order.
+
+# Same library in Kotlin
+
+This library repeats the functionality of the
+[Kotlin library](https://github.com/rtmigo/linecompress_kt).
