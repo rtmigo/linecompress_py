@@ -139,7 +139,6 @@ class LinesDir(Iterable[str]):
         path.parent.mkdir(parents=True, exist_ok=True)
         LinesFile(path).append(text)
 
-
     def _iter(self, binary: bool, reverse: bool = False) \
             -> Union[Iterable[str], Iterable[bytes]]:
         for file in self._recurse_files(reverse=reverse):
@@ -154,11 +153,11 @@ class LinesDir(Iterable[str]):
 
     def iter_byte_lines(self, reverse: bool = False) -> Iterable[bytes]:
         # todo test
-        return self._iter(binary=True, reverse=reverse)
+        return self._iter(binary=True, reverse=reverse)  # type: ignore
 
     def iter_str_lines(self, reverse: bool = False) -> Iterable[bytes]:
         # todo test
-        return self._iter(binary=False, reverse=reverse)
+        return self._iter(binary=False, reverse=reverse)  # type: ignore
 
     def __iter__(self):
         return self.iter_str_lines()
